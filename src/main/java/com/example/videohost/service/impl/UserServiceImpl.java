@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Data
 @RequiredArgsConstructor
@@ -29,7 +31,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(UserDto userDto) {
-        return null;
+        Optional<User> userFromRepository = userRepository.findById(userDto.getId());
+        if (userFromRepository.isEmpty()) {
+            throw new NotFoundException(String.format("User with id = %d not found", userDto.getId()));
+        }
+        User user = mapper.fromDtoForUpdate(userDto, userFromRepository.get());
+        return mapper.toDto(userRepository.save(user));
     }
 
     @Override

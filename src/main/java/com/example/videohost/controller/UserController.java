@@ -5,10 +5,7 @@ import com.example.videohost.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -21,5 +18,12 @@ public class UserController {
     public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto) {
         UserDto user = userService.add(userDto);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id, @RequestBody UserDto userDto) {
+        userDto.setId(id);
+        UserDto user = userService.update(userDto);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

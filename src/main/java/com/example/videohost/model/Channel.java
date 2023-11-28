@@ -1,5 +1,7 @@
 package com.example.videohost.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,16 +10,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @Table(name = "channels")
+@RequiredArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true, exclude = "subscribers")
 public class Channel extends AbstractEntity {
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
 
     @Column(name = "description")
@@ -42,6 +46,7 @@ public class Channel extends AbstractEntity {
     @JoinColumn(name = "author_id")
     private User author;
 
-    @ManyToMany(mappedBy = "channels")
+    @JsonBackReference
+    @ManyToMany(mappedBy = "channels", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<User> subscribers;
 }
