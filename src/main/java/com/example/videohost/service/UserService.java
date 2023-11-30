@@ -1,7 +1,10 @@
 package com.example.videohost.service;
 
 import com.example.videohost.dto.UserDto;
+import com.example.videohost.model.Channel;
 import com.example.videohost.model.User;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -10,5 +13,7 @@ public interface UserService {
     UserDto update(UserDto userDto);
 
     User findById(Long id);
+
+    List<String> getSubscribeChannels(Long id);
 
 }

@@ -3,6 +3,7 @@ package com.example.videohost.service.impl;
 import com.example.videohost.dto.UserDto;
 import com.example.videohost.exception.NotFoundException;
 import com.example.videohost.mapper.UserMapper;
+import com.example.videohost.model.Channel;
 import com.example.videohost.model.User;
 import com.example.videohost.repository.UserRepository;
 import com.example.videohost.service.UserService;
@@ -10,7 +11,9 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Data
@@ -44,5 +47,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id).orElseThrow(() -> {
             throw new NotFoundException("User is absent");
         });
+    }
+
+    @Override
+    public List<String> getSubscribeChannels(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new NotFoundException(String.format("User with id = %d not found", id)));
+        return user.getChannels().stream().map(Channel::getName).collect(Collectors.toList());
     }
 }

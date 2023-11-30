@@ -1,22 +1,22 @@
 package com.example.videohost.service.impl;
 
+import com.example.videohost.dto.ChannelDto;
 import com.example.videohost.dto.ChannelRequestDto;
 import com.example.videohost.dto.ChannelResponseDto;
 import com.example.videohost.dto.UserDto;
 import com.example.videohost.exception.ExistException;
 import com.example.videohost.exception.NotFoundException;
 import com.example.videohost.mapper.ChannelMapper;
-import com.example.videohost.model.Category;
-import com.example.videohost.model.Channel;
-import com.example.videohost.model.User;
+import com.example.videohost.model.*;
 import com.example.videohost.repository.CategoryRepository;
 import com.example.videohost.repository.ChannelRepository;
 import com.example.videohost.repository.UserRepository;
 import com.example.videohost.service.ChannelService;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,7 +39,7 @@ public class ChannelServiceImpl implements ChannelService {
 
         Category category = categoryRepository.findById(channelDto.getCategoryId()).orElseThrow(() -> new NotFoundException("Category is absent"));
 
-        Channel channel = mapper.fromDto(channelDto);
+        Channel channel = mapper.fromRequestDto(channelDto);
         channel.setAuthor(user);
         channel.setCategory(category);
 
@@ -55,6 +55,12 @@ public class ChannelServiceImpl implements ChannelService {
 
         Channel entity = mapper.fromDtoForUpdate(channelDto, channelFromRepository.get());
         Channel channel = channelRepository.save(entity);
+        return mapper.toResponseDto(channel);
+    }
+
+    @Override
+    public ChannelResponseDto findById(Long id) {
+        Channel channel = channelRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Channel with id = %d not found", id)));
         return mapper.toResponseDto(channel);
     }
 
@@ -88,5 +94,11 @@ public class ChannelServiceImpl implements ChannelService {
 
         user.setChannels(newChannels);
         return userRepository.save(user)!= null ? true : false;
+    }
+
+    @Override
+    public Page<ChannelDto> findAll(String name, String language, String category, Pageable pageable) {
+        Page<ChannelShort> all = channelRepository.findAllByName(name, language, category, pageable);
+        return all.map(mapper::toDto);
     }
 }

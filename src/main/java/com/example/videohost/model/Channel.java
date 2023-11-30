@@ -32,7 +32,7 @@ public class Channel extends AbstractEntity {
     @Column(name = "date_create")
     private LocalDateTime dateCreate;
 
-    @Column(name = "lang")
+    @Column(name = "language")
     private String language;
 
     @Column(name = "avatar")
