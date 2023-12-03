@@ -2,6 +2,7 @@ package com.example.videohost.controller;
 
 import com.example.videohost.dto.UserDto;
 import com.example.videohost.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +18,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserDto userDto) {
         UserDto user = userService.add(userDto);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id, @RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,@Valid @RequestBody UserDto userDto) {
         userDto.setId(id);
         UserDto user = userService.update(userDto);
         return new ResponseEntity<>(user, HttpStatus.OK);

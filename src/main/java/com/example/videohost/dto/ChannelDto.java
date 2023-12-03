@@ -1,6 +1,5 @@
 package com.example.videohost.dto;
 
-import com.example.videohost.model.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
